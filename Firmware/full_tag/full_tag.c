@@ -28,7 +28,7 @@ void start_blinking(uint8_t long_count, uint8_t short_count);
 
 void update_blinking();
 
-#define TOUCH_THRESH 20
+#define TOUCH_THRESH 50
 
 #define SHORT_PRESS_TIME (75*1500)
 #define LONG_PRESS_TIME (1000*1500)
@@ -55,7 +55,7 @@ bool led_state = false;
 bool button_1_pressed = false;
 uint32_t button_1_press_start = 0;
 
-bool button_2_pressed_last = false;
+bool button_2_pressed = false;
 uint32_t button_2_press_start = 0;
 
 
@@ -97,7 +97,7 @@ int main()
 		bool button1 = touchval1 > TOUCH_THRESH;
 		bool button2 = touchval2 > TOUCH_THRESH;
 
-		//printf("Button 1 %d %d, button 2 %d %d\n", touchval1, button1, touchval2, button2);
+		printf("Button 1 %d %d, button 2 %d %d\n", touchval1, button1, touchval2, button2);
 	
 		process_button_1(button1);  
 		process_button_2(button2);  
@@ -166,11 +166,11 @@ int read_bank_into_ntag(int bank) {
 	Delay_Us(160);
 	// printf("Transfer complete\n");
 
-	uint32_t block[4] = {0, 0, 0, bank};
-	i2c_stat = i2c_write(NTAG_ADDR, (64), (uint8_t*) block, 16);
-	if(i2c_stat != I2C_OK) 
-		printf("Error Using the I2C Bus\n");
-	Delay_Us(160);
+	//uint32_t block[4] = {0, 0, 0, bank};
+	//i2c_stat = i2c_write(NTAG_ADDR, (64), (uint8_t*) block, 16);
+	//if(i2c_stat != I2C_OK) 
+	//	printf("Error Using the I2C Bus\n");
+	//Delay_Us(160);
 	// printf("Chosen bank written to tag\n");
 
 	GPIOD->OUTDR |= (1<<6);
@@ -195,7 +195,7 @@ int write_ntag_into_bank(int bank) {
 		uint32_t blocks[4][4] = {0};
 		uint32_t * ptr = (uint32_t *) ((uint32_t)bank_addrs[bank] + (j<<6));
 
-		// printf("Reading 4 blocks from %d to %d from ntag, writing to address %lx \n", block_to_read, block_to_read + 3, (uint32_t) ptr);
+		printf("Reading 4 blocks from %d to %d from ntag, writing to address %lx \n", block_to_read, block_to_read + 3, (uint32_t) ptr);
 
 		for(int k=0; k<4; k++){
 			i2c_read(NTAG_ADDR, block_to_read++, (uint8_t*) blocks[k], 16);
@@ -298,7 +298,10 @@ void process_button_1(bool pressed){
         uint32_t press_duration = (SysTick->CNT) - button_1_press_start;
         button_1_pressed = false;
         if (press_duration >= SHORT_PRESS_TIME && press_duration < LONG_PRESS_TIME) {
-            if (mode == 1) {
+			if (mode == 0) {
+				read_bank_into_ntag(0);
+			}
+			else if (mode == 1) {
 				// printf("Med press detected, reading");
                 read_bank_into_ntag(count);
 				mode = 0;
@@ -316,23 +319,38 @@ void process_button_1(bool pressed){
 			// Increment the mode
 			mode = (mode + 1)%3;
 			count = 0; // Reset count when switching modes
+			//is_blinking = false;
 			last_interaction = (SysTick->CNT);
 		}
         last_interaction = (SysTick->CNT);
     }
 }
 
+
 void process_button_2(bool pressed){
 
-	if (mode == 0) return;  // Ignore Button 2 in Mode 0
-
-	if (button_2_pressed_last && !pressed) {  // Detect button being lifted
-		count = (count + 1)%4;
-		last_interaction = (SysTick->CNT);
-
+	if (pressed) {  
+        if (!button_2_pressed) {  
+			// If falling edge detected reset the counter timer
+            button_2_pressed = true;
+            button_2_press_start = (SysTick->CNT);
+        }
+    } else if (button_2_pressed) {  
+		// If the button was released 
+        uint32_t press_duration = (SysTick->CNT) - button_1_press_start;
+        button_2_pressed = false;
+        if (press_duration >= SHORT_PRESS_TIME){
+			if(mode == 0){
+				//printf("Loading from bank %d", (loadbank?0:1));
+				read_bank_into_ntag(1);
+			}
+			else {
+			count = (count + 1)%4;
+			last_interaction = (SysTick->CNT);
+			}
+		}
 		// printf("Button 2 pressed\n");
 	}
-	button_2_pressed_last = pressed;
 }
 
 void start_blinking(uint8_t long_count, uint8_t short_count){
