@@ -1905,12 +1905,6 @@
 		)
 	)
 	(junction
-		(at 35.56 83.82)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "02948a86-5a7c-4205-a1bb-22156432db89")
-	)
-	(junction
 		(at 88.9 107.95)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1935,10 +1929,10 @@
 		(uuid "5578ab68-b9ea-4a38-a632-a605479f7dec")
 	)
 	(junction
-		(at 39.37 83.82)
+		(at 49.53 83.82)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "5967bfc8-9581-4190-91e1-5f86ee404ea0")
+		(uuid "74c1d6d2-8d72-4092-86b2-ba0f032e21b2")
 	)
 	(junction
 		(at 82.55 107.95)
@@ -1954,7 +1948,7 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 83.82) (xy 59.69 83.82)
+			(xy 35.56 83.82) (xy 41.91 83.82)
 		)
 		(stroke
 			(width 0)
@@ -2074,7 +2068,7 @@
 	)
 	(wire
 		(pts
-			(xy 31.75 83.82) (xy 31.75 85.09)
+			(xy 31.75 78.74) (xy 31.75 85.09)
 		)
 		(stroke
 			(width 0)
@@ -2114,23 +2108,13 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 83.82) (xy 31.75 83.82)
+			(xy 31.75 78.74) (xy 49.53 78.74)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "a8a81609-4b59-45b7-9cf2-ee6a23ef337b")
-	)
-	(wire
-		(pts
-			(xy 35.56 93.98) (xy 39.37 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "affca87b-5099-42dd-89ec-1ae44d3db24e")
 	)
 	(wire
 		(pts
@@ -2144,23 +2128,13 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 93.98) (xy 39.37 83.82)
+			(xy 49.53 83.82) (xy 49.53 78.74)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "f07f758e-2875-44c8-89e8-69ee57442391")
-	)
-	(wire
-		(pts
-			(xy 35.56 83.82) (xy 39.37 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f183b72a-34e4-4eaa-aee7-3c6ea1cc2485")
+		(uuid "e8ef0a30-a553-4f7b-b688-74a340dbe76c")
 	)
 	(wire
 		(pts
@@ -2172,15 +2146,15 @@
 		)
 		(uuid "f618cf33-5230-46fa-aaa7-4558f0500e7a")
 	)
-	(text "This bridge ensures we can make the spiral trace connect"
-		(exclude_from_sim no)
-		(at 41.402 80.518 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
+	(wire
+		(pts
+			(xy 49.53 83.82) (xy 59.69 83.82)
 		)
-		(uuid "4fecdbe2-935e-4b38-9fd0-0794a5c894b0")
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f9c7bbd0-24a1-461c-9501-4ac970c85f79")
 	)
 	(label "A1"
 		(at 69.85 55.88 0)
@@ -2379,6 +2353,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 106.68 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C60490"
 			(at 106.68 101.6 0)
 			(effects
 				(font
@@ -2684,6 +2667,83 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 45.72 83.82 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1328889b-3bc4-4c11-8788-7ac31fe0eec3")
+		(property "Reference" "C3"
+			(at 45.72 76.2 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "C"
+			(at 45.72 78.74 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 49.53 82.8548 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 45.72 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 45.72 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C107010"
+			(at 45.72 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "07022416-7df6-4d9e-aba3-ad7ebf06b577")
+		)
+		(pin "2"
+			(uuid "7b1d690a-1533-43ac-b315-7d9a2622ef62")
+		)
+		(instances
+			(project "nfc-pcb-tag"
+				(path "/af676c0f-31c4-428e-bd52-648c0da860d7"
+					(reference "C3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 74.93 100.33 0)
 		(unit 1)
@@ -2768,7 +2828,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10uF"
 			(at 86.36 105.4099 0)
 			(effects
 				(font
@@ -2796,6 +2856,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 82.55 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C15525"
 			(at 82.55 104.14 0)
 			(effects
 				(font
@@ -2838,7 +2907,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10uF"
 			(at 92.71 105.4099 0)
 			(effects
 				(font
@@ -2866,6 +2935,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 88.9 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C15525"
 			(at 88.9 104.14 0)
 			(effects
 				(font
@@ -2938,6 +3016,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 118.11 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C114759 "
 			(at 118.11 41.91 0)
 			(effects
 				(font
@@ -3120,7 +3207,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 32.7152 92.71 0)
 			(effects
 				(font
@@ -3275,6 +3362,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 102.87 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C60490"
 			(at 102.87 67.31 0)
 			(effects
 				(font
@@ -3552,6 +3648,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC Part" "C5299908"
+			(at 59.69 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "10"
 			(uuid "9d3cc1b3-d4fe-49db-8bca-60240558cf54")
 		)
@@ -3717,7 +3822,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Library:ANT"
 			(at 35.56 88.9 0)
 			(effects
 				(font
@@ -3736,6 +3841,15 @@
 			)
 		)
 		(property "Description" "2-polar test point"
+			(at 35.56 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C33126958"
 			(at 35.56 88.9 0)
 			(effects
 				(font
@@ -3947,6 +4061,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC Part" "C60490"
+			(at 111.76 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "39b6a690-7b3d-402c-914e-218046c4c8bf")
 		)
@@ -3981,7 +4104,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100nF"
 			(at 100.33 105.4099 0)
 			(effects
 				(font
@@ -4009,6 +4132,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 96.52 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C541406"
 			(at 96.52 104.14 0)
 			(effects
 				(font
@@ -4077,6 +4209,15 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
+			(at 110.49 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C5336761 "
 			(at 110.49 41.91 0)
 			(effects
 				(font
@@ -4229,6 +4370,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 102.87 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C60490"
 			(at 102.87 62.23 0)
 			(effects
 				(font
