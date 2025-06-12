@@ -5,12 +5,8 @@ preflight:
   set_text_variables:
     - name: GIT_TAG
       command: git describe --tags --abbrev=0
-    - name: GIT_HASH
-      command: git rev-parse --short HEAD
     - name: PROJ_TITLE
       command: head -n 1 metadata.txt
-    - name: PROJ_PN
-      command: sed -n '2p' metadata.txt
 
 global:
   # Sets the default output filename for all generated files. You likely don't have to change this.
