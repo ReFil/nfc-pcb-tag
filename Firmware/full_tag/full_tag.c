@@ -2,11 +2,12 @@
 #include "ch32fun.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include "ch32v003_GPIO_branchless.h"
+
 
 #include "lib_i2c.h"
-#include "ch32v003_touch.h"
 
-#define NTAG_ADDR 0x02
+#define NTAG_ADDR 0x55
 
 uint32_t *bank_addrs[4] = {(uint32_t*)0x08003000, (uint32_t*)0x08003400, (uint32_t*)0x08003800, (uint32_t*)0x08003c00};
 
@@ -66,20 +67,55 @@ int main()
 	RCC->CFGR0 |= (12<<4); //slowdown for lower power
 
 	// Enable GPIOD and ADC for capsense
-	RCC->APB2PCENR |= RCC_APB2Periph_GPIOD | RCC_APB2Periph_ADC1;
-	//PD6 output
-	GPIOD->CFGLR &= ~(0xf<<(4*6));
-	GPIOD->CFGLR |= ((GPIO_Speed_10MHz | GPIO_CNF_OUT_PP)<<(4*6));
+	RCC->APB2PCENR |= RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD;
 
-	if(i2c_init(I2C_CLK_400KHZ) != I2C_OK) printf("Failed to init the I2C Bus\n");
+	GPIO_port_enable(GPIO_port_D);
+
+
+	GPIOA->CFGLR = (GPIO_CNF_IN_PUPD<<(4*2)) |
+					(GPIO_CNF_IN_PUPD<<(4*1));
+	GPIOA->BSHR = GPIO_BSHR_BS2 |
+					GPIO_BSHR_BS1;
+
+	GPIOD->CFGLR = (GPIO_CNF_IN_PUPD<<(4*7)) |
+					(GPIO_CNF_IN_PUPD<<(4*4)) |
+					(GPIO_CNF_IN_PUPD<<(4*2)) |
+					(GPIO_CNF_IN_PUPD<<(4*1));
+	 GPIOD->BSHR = GPIO_BSHR_BS7 |
+				   GPIO_BSHR_BS4 |
+				   GPIO_BSHR_BS2 |
+				   GPIO_BSHR_BS1;
+
+	 GPIOC->CFGLR = (GPIO_CNF_IN_PUPD<<(4*7)) |
+					(GPIO_CNF_IN_PUPD<<(4*6)) |
+					(GPIO_CNF_IN_PUPD<<(4*4)) |
+					(GPIO_CNF_IN_PUPD<<(4*3)) |
+					(GPIO_CNF_IN_PUPD<<(4*2)) |
+					(GPIO_CNF_IN_PUPD<<(4*1)) |
+					(GPIO_CNF_IN_PUPD<<(4*0));
+	 GPIOC->BSHR = GPIO_BSHR_BS7 |
+				   GPIO_BSHR_BS6 |
+				   GPIO_BSHR_BS4 |
+				   GPIO_BSHR_BS3 |
+				   GPIO_BSHR_BS2 |
+				   GPIO_BSHR_BS1 |
+				   GPIO_BSHR_BS0;
+
+	//PD6 output
+	GPIOD->CFGLR &= ~(0xf<<(4*3));
+	GPIOD->CFGLR |= ((GPIO_Speed_10MHz | GPIO_CNF_OUT_PP)<<(4*3));
+
+	GPIO_pinMode(GPIOv_from_PORT_PIN(GPIO_port_D, 5), GPIO_pinMode_I_pullUp, GPIO_Speed_In);
+	GPIO_pinMode(GPIOv_from_PORT_PIN(GPIO_port_D, 6), GPIO_pinMode_I_pullUp, GPIO_Speed_In);
+
+	if(i2c_init(I2C_CLK_100KHZ) != I2C_OK) printf("Failed to init the I2C Bus\n");
 
 	// Initialising I2C causes the pins to transition from LOW to HIGH.
 	// Wait 100ms to allow the I2C Device to timeout and ignore the transition.
 	// Otherwise, an extra 1-bit will be added to the next transmission
 	Delay_Ms(100);
-	// Turn on PD6 LED
-	GPIOD->OUTDR = 1<<6;
-	InitTouchADC();
+	// Turn on PD3 LED
+	GPIOD->OUTDR = 1<<3;
 	//bank = get_active_bank();
 	mode = 0;
 	while(1) {
@@ -91,13 +127,10 @@ int main()
 			last_interaction = (SysTick->CNT);
 		}
 
-		uint32_t touchval1 = ReadTouchPin( GPIOD, 5, 5, 3);
-		uint32_t touchval2 = ReadTouchPin( GPIOD, 4, 7, 3);
+		uint8_t button1 = GPIO_digitalRead(GPIOv_from_PORT_PIN(GPIO_port_D, 5));
+		uint8_t button2 = GPIO_digitalRead(GPIOv_from_PORT_PIN(GPIO_port_D, 6));
 
-		bool button1 = touchval1 > TOUCH_THRESH;
-		bool button2 = touchval2 > TOUCH_THRESH;
-
-		printf("Button 1 %d %d, button 2 %d %d\n", touchval1, button1, touchval2, button2);
+		//printf("Button 1 %d, button 2 %d\n", button1, button2);
 	
 		process_button_1(button1);  
 		process_button_2(button2);  
@@ -149,7 +182,7 @@ int unlock_flash() {
 int read_bank_into_ntag(int bank) {
 	// printf("Writing data from bank %d into ntag \n", bank);
 	// Extinguish LED to save power
-	GPIOD->OUTDR &= ~(1<<6);
+	GPIOD->OUTDR &= ~(1<<3);
 	
 	for(int i=0; i<55; i++) {
 		uint32_t *ptr = (uint32_t *) ((uint32_t)bank_addrs[bank] + (i<<4));
@@ -173,7 +206,7 @@ int read_bank_into_ntag(int bank) {
 	//Delay_Us(160);
 	// printf("Chosen bank written to tag\n");
 
-	GPIOD->OUTDR |= (1<<6);
+	GPIOD->OUTDR |= (1<<3);
 
 
 	return 0;
@@ -188,7 +221,7 @@ int write_ntag_into_bank(int bank) {
 		printf("Flash Locked!\n");
 
 	// Extinguish LED to save power
-	GPIOD->OUTDR &= ~(1<<6);
+	GPIOD->OUTDR &= ~(1<<3);
 
 	int block_to_read = 1;
 	for(int j=0; j<14; j++) {	
@@ -254,7 +287,7 @@ int write_ntag_into_bank(int bank) {
 		//printf( "FLASH->STATR = %08lx -> %d cycles for page write\n", FLASH->STATR, stop - start );
 		// printf( "Memory at %p: %08lx %08lx\n", ptr, ptr[0], ptr[1] );
 	}
-	GPIOD->OUTDR |= (1<<6);
+	GPIOD->OUTDR |= (1<<3);
 	return 0;
 }
 
@@ -360,7 +393,7 @@ void start_blinking(uint8_t long_count, uint8_t short_count){
 		blink_start = (SysTick->CNT);
 		is_blinking = true;
 		led_state = false;
-		GPIOD->OUTDR &= ~(1<<6);
+		GPIOD->OUTDR &= ~(1<<3);
 		// printf("Blink start, long %d, short %d", target_long_blinks, target_short_blinks);
 	}
 }
@@ -375,14 +408,14 @@ void update_blinking() {
 	if(target_long_blinks){
 		if (!led_state && (current_time - blink_start >= LONG_BLINK_TIME)) {
 			led_state = true;
-			GPIOD->OUTDR |= (1<<6);
+			GPIOD->OUTDR |= (1<<3);
 			blink_start = current_time;
 			target_long_blinks--;
 			// printf("Long blink on");
 		} 
 		else if (led_state && (current_time - blink_start >= LONG_BLINK_TIME)) {
 			led_state = false;
-			GPIOD->OUTDR &= ~(1<<6);
+			GPIOD->OUTDR &= ~(1<<3);
 			blink_start = current_time;
 			target_long_blinks--;
 			// printf("Long blink off");
@@ -390,14 +423,14 @@ void update_blinking() {
 	} else if(target_short_blinks) {
 		if (!led_state && (current_time - blink_start >= SHORT_BLINK_TIME)) {
 			led_state = true;
-			GPIOD->OUTDR |= (1<<6);
+			GPIOD->OUTDR |= (1<<3);
 			blink_start = current_time;
 			target_short_blinks--;
 			// printf("short blink on");
 		} 
 		else if (led_state && (current_time - blink_start >= SHORT_BLINK_TIME)) {
 			led_state = false;
-			GPIOD->OUTDR &= ~(1<<6);
+			GPIOD->OUTDR &= ~(1<<3);
 			blink_start = current_time;
 			target_short_blinks--;
 			// printf("short blink off");
