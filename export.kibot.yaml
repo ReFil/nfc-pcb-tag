@@ -65,7 +65,7 @@ variants:
     type: kibom
     variant: rotated
     pre_transform: fix_jlc_rotation
-    exclude_filter: mechanical_fixed
+    #exclude_filter: mechanical_fixed
 
 outputs:
   - name: JLCPCB_gerbers
